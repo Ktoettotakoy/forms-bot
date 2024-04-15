@@ -17,9 +17,14 @@ from aiogram.filters import CommandStart, Command
 dp = Dispatcher()
 bot = Bot(token=config.bot.token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
-def main() -> None:
+async def main() -> None:
     dp.message.register(start_handler, CommandStart())
     dp.message.register(echo_handler)
+
+    try:
+        await dp.start_polling(bot)
+    finally:
+        bot.session.close()
 
 
 if __name__ == "__main__":

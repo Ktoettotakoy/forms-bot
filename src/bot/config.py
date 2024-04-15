@@ -22,10 +22,10 @@ def get_config(path: str):
     config_data = {}
     for line in lines:
         key, value = line.strip().split("=")
-        config_data[key] = value
+        config_data[key.strip()] = value.strip()
 
     admin_id_strings = config_data.get("ADMIN_ID", "").split(",")
-    admin_id_integers = [int(id_str) for id_str in admin_id_strings]
+    admin_id_integers = [int(id_str) for id_str in admin_id_strings if id_str.strip().isdigit()]
 
     return Config(
         bot=Bot(
