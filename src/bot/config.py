@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List
+import os
 
 # This package is responsible for configuring a bot from .env file
 
@@ -15,20 +16,13 @@ class Config:
     bot: Bot
 
 def get_config(path: str):
-    with open(path) as f:
-        lines = f.readlines()
-
-    config_data = {}
-    for line in lines:
-        key, value = line.strip().split("=")
-        config_data[key.strip()] = value.strip()
-
-    admin_id_strings = config_data.get("ADMIN_ID", "").split(",")
-    admin_id_integers = [int(id_str) for id_str in admin_id_strings if id_str.strip().isdigit()]
+    token = os.environ.get("TOKEN", "")
+    admin_id_str = os.environ.get("ADMIN_ID", "")
+    admin_id_integers = [int(id_str.strip()) for id_str in admin_id_str.split(",") if id_str.strip().isdigit()]
 
     return Config(
         bot=Bot(
-            token=config_data.get("TOKEN", ""),
+            token=token,
             admin_id=admin_id_integers
         )
     )
