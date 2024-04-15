@@ -1,9 +1,8 @@
-from aiogram import Bot
 from aiogram.types import Message
 
 # This package deals with a wrong input
 
-async def echo_handler(message: Message, bot: Bot) -> None:
+async def echo_handler(message: Message) -> None:
     if (message.text[0] == "/"):
         await message.answer(f"Command is not found")
     else:
