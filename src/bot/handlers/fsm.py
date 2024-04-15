@@ -1,5 +1,6 @@
 from bot.config import config
 from bot.resources.text import buttons, waiting_for_address_state_message, waiting_for_phone_state_message, success_message
+from bot.utils.keyboard_markup import get_phone_num_keyboard
 
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
@@ -27,17 +28,24 @@ async def messages_state_handler(message: Message, state: FSMContext) -> None:
             await message.answer(text=waiting_for_address_state_message, reply_markup=ReplyKeyboardRemove())
             await state.set_state(FormService.waiting_for_address)
     elif current_state == 'FormService:waiting_for_address':
-
-        address = message.text
-        await state.update_data(address=address)
-        await state.set_state(FormService.waiting_for_phone)
-        await message.answer(text=waiting_for_phone_state_message)
+        print(len(message.text))
+        if(len(message.text) < 500):
+            address = message.text
+            await state.update_data(address=address)
+            await state.set_state(FormService.waiting_for_phone)
+            await message.answer(text=waiting_for_phone_state_message, reply_markup=get_phone_num_keyboard())
+        else:
+            await message.answer(text="Address is too long, try again")
     elif current_state == 'FormService:waiting_for_phone':
         
         bot = message.bot
         admin_id = config.bot.admin_id[0]
 
-        phone_num = message.text
+        if message.contact:
+            phone_num = message.contact.phone_number
+        else:
+            phone_num = message.text
+        
         await state.update_data(phone_num=phone_num) 
         
         # dd/mm/YY H:M:S
@@ -50,7 +58,7 @@ async def messages_state_handler(message: Message, state: FSMContext) -> None:
         message_string += f"Address: {data.get('address', 'N/A')}\n"
         message_string += f"Phone Number: {data.get('phone_num', 'N/A')}"
         
-        await message.answer(text=success_message)
+        await message.answer(text=success_message, reply_markup=ReplyKeyboardRemove())
         await bot.send_message(admin_id, text=message_string)
         await state.clear()
         

@@ -18,7 +18,7 @@ start_command_admin_message = "Hi, you are an admin, here is your additional com
 buttons = []
 
 button_1_message = ("Продажа машин")
-button_2_message = ("Cafe")
+button_2_message = ("Кафе")
 button_3_message = ("Салон Красоты")
 button_4_message = ("Установка сигнализаций")
 button_5_message = ("Страховая Компания")
@@ -35,7 +35,7 @@ buttons.append(button_6_message)
 waiting_for_address_state_message = ("Укажите свой адрес, чтобы мы могли подобрать ближайший сервис для Вас")
 
 # Text after Address
-waiting_for_phone_state_message = ("Оставьте свой номер телефон, в скором времени оператор с Вами свяжется")
+waiting_for_phone_state_message = ("Оставьте свой номер телефон, в скором времени оператор с Вами свяжется, or Press the button")
 
 # Text after Phone number 
 success_message = ("✅ Заявка успешно оставлена, ожидайте звонка")
