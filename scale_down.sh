@@ -1,1 +1,0 @@
-heroku ps:scale bot=0 -a guarded-meadow-07098
