@@ -27,4 +27,4 @@ async def get_chat_id(message: Message) -> None:
     user = message.from_user
     
     if user.id in config.bot.admin_id:
-        await message.answer("Chat id is: " + str(message.chat))
+        await message.answer("Chat id is: " + str(message.chat.id))
