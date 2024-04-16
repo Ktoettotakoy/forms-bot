@@ -33,7 +33,7 @@ async def main() -> None:
     try:
         await dp.start_polling(bot)
     finally:
-        bot.session.close()
+        await bot.session.close()
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
