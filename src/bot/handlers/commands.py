@@ -23,4 +23,8 @@ async def start_handler(message: Message, state: FSMContext) -> None:
         await state.set_state(FormService.waiting_for_service_choice)
 
         
+async def get_chat_id(message: Message) -> None:
+    user = message.from_user
     
+    if user.id in config.bot.admin_id:
+        await message.answer("Chat id is: " + str(message.chat.id))
