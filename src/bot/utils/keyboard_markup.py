@@ -21,7 +21,7 @@ def get_on_start_keyboard() -> ReplyKeyboardMarkup:
 def get_phone_num_keyboard() -> ReplyKeyboardMarkup:
     builder = ReplyKeyboardBuilder()
 
-    builder.button(text="Share Phone Number", request_contact=True)
+    builder.button(text="Поделиться Номером Телефона", request_contact=True)
     builder.adjust(1)
 
     return builder.as_markup(resize_keyboard=True)
