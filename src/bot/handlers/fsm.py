@@ -1,4 +1,5 @@
 from bot.config import config
+from bot.handlers.echo import echo_handler
 from bot.resources.text import buttons, waiting_for_address_state_message, waiting_for_phone_state_message, success_message
 from bot.utils.keyboard_markup import get_phone_num_keyboard
 
@@ -8,6 +9,7 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message, ReplyKeyboardRemove
 
 from datetime import datetime
+
 # This package deals with an input after a start keyboard press
 
 class FormService(StatesGroup):
@@ -28,14 +30,13 @@ async def messages_state_handler(message: Message, state: FSMContext) -> None:
             await message.answer(text=waiting_for_address_state_message, reply_markup=ReplyKeyboardRemove())
             await state.set_state(FormService.waiting_for_address)
     elif current_state == 'FormService:waiting_for_address':
-        print(len(message.text))
         if(len(message.text) < 500):
             address = message.text
             await state.update_data(address=address)
             await state.set_state(FormService.waiting_for_phone)
             await message.answer(text=waiting_for_phone_state_message, reply_markup=get_phone_num_keyboard())
         else:
-            await message.answer(text="Address is too long, try again")
+            await message.answer(text="Превышено количество доступный символов. Попробуйте ещё раз")
     elif current_state == 'FormService:waiting_for_phone':
         
         bot = message.bot
@@ -50,15 +51,16 @@ async def messages_state_handler(message: Message, state: FSMContext) -> None:
         
         # dd/mm/YY H:M:S
         dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-
         data = await state.get_data()
 
         message_string =  f"Time: {dt_string}\n"
-        message_string += f"Service: {data.get('service', 'N/A')}\n"
-        message_string += f"Address: {data.get('address', 'N/A')}\n"
-        message_string += f"Phone Number: {data.get('phone_num', 'N/A')}"
+        message_string += f"Сервис: {data.get('service', 'N/A')}\n"
+        message_string += f"Адрес: {data.get('address', 'N/A')}\n"
+        message_string += f"Номер телефона: {data.get('phone_num', 'N/A')}"
         
         await message.answer(text=success_message, reply_markup=ReplyKeyboardRemove())
         await bot.send_message(chat_id=chat_id, text=message_string)
         await state.clear()
+    else: 
+        await echo_handler(message)
         

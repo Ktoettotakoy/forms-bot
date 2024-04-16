@@ -10,7 +10,7 @@ short_description = ("🤖 Бот для помощи поиска удобны�
 
 # /start
 start_command_user_message = "Для начала выберите нужную Вам услугу:"
-start_command_admin_message = "Hi, you are an admin, here is your additional commands:"
+start_command_admin_message = "Привет админ! Напиши /help чтоб узнать доступные команды"
 
 # /echo
 
@@ -32,10 +32,10 @@ buttons.append(button_5_message)
 buttons.append(button_6_message)
 
 # Text after button press (Address)
-waiting_for_address_state_message = ("Укажите свой адрес, чтобы мы могли подобрать ближайший сервис для Вас")
+waiting_for_address_state_message = ("Укажите свой адрес, чтобы мы могли подобрать ближайший сервис доступный Вам")
 
 # Text after Address
-waiting_for_phone_state_message = ("Оставьте свой номер телефон, в скором времени оператор с Вами свяжется, or Press the button")
+waiting_for_phone_state_message = ("Оставьте свой номер телефона, в скором времени оператор свяжется с Вами")
 
 # Text after Phone number 
 success_message = ("✅ Заявка успешно оставлена, ожидайте звонка")
