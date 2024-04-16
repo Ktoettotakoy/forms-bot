@@ -39,7 +39,7 @@ async def messages_state_handler(message: Message, state: FSMContext) -> None:
     elif current_state == 'FormService:waiting_for_phone':
         
         bot = message.bot
-        admin_id = config.bot.admin_id[0]
+        chat_id = config.bot.admin_chat_id
 
         if message.contact:
             phone_num = message.contact.phone_number
@@ -59,6 +59,6 @@ async def messages_state_handler(message: Message, state: FSMContext) -> None:
         message_string += f"Phone Number: {data.get('phone_num', 'N/A')}"
         
         await message.answer(text=success_message, reply_markup=ReplyKeyboardRemove())
-        await bot.send_message(admin_id, text=message_string)
+        await bot.send_message(chat_id=chat_id, text=message_string)
         await state.clear()
         

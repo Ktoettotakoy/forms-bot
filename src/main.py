@@ -5,7 +5,7 @@ from bot.config import config
 
 ## My own commands 
 from bot.handlers.echo import echo_handler
-from bot.handlers.commands import start_handler
+from bot.handlers.commands import start_handler, get_chat_id
 from bot.handlers.fsm import messages_state_handler
 from bot.resources.text import description, short_description
 
@@ -23,7 +23,10 @@ async def on_start():
 
 async def main() -> None:
     dp.startup.register(on_start)
+    
     dp.message.register(start_handler, CommandStart())
+    dp.message.register(get_chat_id, Command(commands=["get_chat_id"]))
+
     dp.message.register(messages_state_handler)
     dp.message.register(echo_handler)
 
