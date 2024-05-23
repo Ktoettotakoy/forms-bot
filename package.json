@@ -11,6 +11,7 @@
   "author": "Yaroslav",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1626.0",
     "dotenv": "^16.4.5",
     "node-fetch": "^3.3.2",
     "node-telegram-bot-api": "^0.66.0"
