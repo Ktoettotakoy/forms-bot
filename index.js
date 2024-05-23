@@ -1,46 +1,38 @@
-import { botAPI } from './config.js'
-import fetch from 'node-fetch';
+import { TOKEN, ADMINS } from './config.js'
 
-async function sendMessage({chatId, text}) {
-  const params = new URLSearchParams({
-    chat_id: chatId,
-    text: `You said ${text}`
-  })
-
-  try {
-    const response = await fetch(`${botAPI}/sendMessage?${params}`, {
-      method: 'GET'
-    });
-
-    const data = await response.json();
-    if (data.ok) {
-      console.log("Message sent successfully:", data);
-    } else {
-      console.log("Failed to send message:", data.description);
-    }
-
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
+import TelegramBot from 'node-telegram-bot-api';
+const bot = new TelegramBot(TOKEN);
 
 export const handler = async (event) => {
   
   const body = JSON.parse(event.body);
   
   const { chat, text } = body.message;
-
+  console.log(text)
+  console.log(body.message)
   try {
-    await sendMessage({
-      chatId:chat.id, text
-    })
+    
+    switch (text) {
+      case "/start":
+        if(ADMINS.includes(chat.id)){
+          bot.sendMessage("Hello Admin")
+        } else{
+          bot.sendMessage("Hello not an admin")
+        }
+        break;
+      
+    
+      default:
+        break;
+    }
+    
   } catch (error) {
     console.error('Error:', error);
   }
-  // TODO implement
+
   const response = {
     statusCode: 200,
-    body: JSON.stringify('Hello from Lambda!'),
+    body: JSON.stringify('Message processed'),
   };
   return response;
 };
