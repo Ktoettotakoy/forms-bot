@@ -1,65 +1,45 @@
-import { TOKEN, ADMINS } from './config.js'
+import { handleServiceChoice } from './src/handlers/handlers.js';
+import { createOrUpdate, getUserById } from './src/database/db.js';
 
-import TelegramBot from 'node-telegram-bot-api';
-const bot = new TelegramBot(TOKEN);
+// chat.id and message from body is missing here
 
 export const handler = async (event) => {
   
   const body = JSON.parse(event.body);
   
   try {
-    if (body.message){
-      const { chat, text } = body.message;
-      switch (text) {
-        case '/start':
-          if(!ADMINS.includes(chat.id)){
-            await bot.sendMessage(chat.id, "Hello Admin")
-          } else{
-            console.log("target")
-            await bot.sendMessage(chat.id, "Для начала выберите нужную Вам услугу:", {
-              reply_markup: {
-                keyboard: [
-                  [
-                    {text: 'Option 1', callback_data: "Hui" },
-                    {text: 'Option 2', callback_data: "HELP" }
-                  ],
-                ],
-                resize_keyboard: true,
-                one_time_keyboard: true
-              }
-            });
-          }
+    // Retrieve user's current state from DynamoDB
+    const userData = await getUserById(chat.id);
+
+    if (!userData) {
+      // New user, initialize state and store in DynamoDB
+      await createOrUpdate({
+        chatId: chat.id,
+        currentState: 'waiting_for_service_choice'
+      });
+    } else {
+      // User exists, handle message based on current state
+      const currentState = userData.currentState;
+
+      switch (currentState) {
+        case 'waiting_for_service_choice':
+          // Handle service choice logic
+          await handleServiceChoice(chat.id, text);
           break;
-        case 'option 1':
-        case 'option 2':
-          console.log("options")
-          await bot.sendMessage(chat.id, "HUI")
-          await bot.sendMessage(chat.id, "Укажите свой адрес, чтобы мы могли подобрать ближайший сервис доступный Вам:", {
-            reply_markup: {
-              keyboard: [
-                [
-                  { text: 'Option A' },
-                  { text: 'Option B' }
-                ],
-              ],
-              one_time_keyboard: true // Keyboard will disappear after button press
-            }
-          });
+        case 'waiting_for_address':
+          // Handle address input logic
+          await handleAddressInput(chat.id, text);
           break;
+        case 'waiting_for_phone':
+          // Handle phone input logic
+          await handlePhoneInput(chat.id, text);
           break;
         default:
           console.log("default")
-          await bot.sendMessage(chat.id, text)
+          await bot.sendMessage(chat.id, "Something went wrong")
           break;
       }
-    } else if (body.callback_query){
-      console.log(body.callback_query)
-      const { data, message } = body.callback_query;
-      await bot.sendMessage(message, data)
     }
-
-
-    
   } catch (error) {
     console.error('Error:', error);
   }

@@ -20,7 +20,6 @@ const readAllUsers = async()=>{
     const params = {
         TableName: Table
     }
-
     try{
         const { Items = [] } = await db.scan(params).promise()
         return { success: true, data: Items }
@@ -28,7 +27,6 @@ const readAllUsers = async()=>{
     } catch(error){
         return { success: false, data: null }
     }
-
 }
 
 // Read Users by ID
