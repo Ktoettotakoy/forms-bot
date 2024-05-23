@@ -26,6 +26,6 @@ export const waiting_for_address_state_message = ("Укажите свой ад�
 
 // # Text after Address
 export const waiting_for_phone_state_message = ("Оставьте свой номер телефона, в скором времени оператор свяжется с Вами")
-
+export const share_phone_number_keyboard = ("Поделится номером")
 // # Text after Phone number 
 export const success_message = ("✅ Заявка успешно оставлена, ожидайте звонка")

@@ -1,6 +1,6 @@
 import {db, Table} from './db.config.js'
 
-import { PutCommand, GetCommand, ScanCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
+import { PutCommand, GetCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
 
 // Create or Update users
 const createOrUpdate = async (data = {}) => {
@@ -10,26 +10,13 @@ const createOrUpdate = async (data = {}) => {
     };
 
     try {
-        await db.send(new PutCommand(params));
+        const command = new PutCommand(params);
+        const response = await db.send(command);
+        console.log(response)
         return { success: true };
     } catch (error) {
         console.error('Failed to create or update item:', error);
         return { success: false, error };
-    }
-};
-
-// Read all users
-const readAllUsers = async () => {
-    const params = {
-        TableName: Table
-    };
-
-    try {
-        const { Items = [] } = await db.send(new ScanCommand(params));
-        return { success: true, data: Items };
-    } catch (error) {
-        console.error('Failed to read items:', error);
-        return { success: false, data: null, error };
     }
 };
 
@@ -71,7 +58,6 @@ const deleteUserById = async (value, key = 'id') => {
 
 export {
     createOrUpdate,
-    readAllUsers,
     getUserById,
     deleteUserById
 };
