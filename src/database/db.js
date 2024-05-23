@@ -12,7 +12,6 @@ const createOrUpdate = async (data = {}) => {
     try {
         const command = new PutCommand(params);
         const response = await db.send(command);
-        console.log(response)
         return { success: true };
     } catch (error) {
         console.error('Failed to create or update item:', error);
