@@ -1,72 +1,77 @@
 import {db, Table} from './db.config.js'
 
+import { PutCommand, GetCommand, ScanCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
+
 // Create or Update users
-const createOrUpdate = async (data = {}) =>{
+const createOrUpdate = async (data = {}) => {
     const params = {
         TableName: Table,
         Item: data
-    }
+    };
 
-    try{
-        await db.put(params).promise()
-        return { success: true }
-    } catch(error){
-        return { success: false}
+    try {
+        await db.send(new PutCommand(params));
+        return { success: true };
+    } catch (error) {
+        console.error('Failed to create or update item:', error);
+        return { success: false, error };
     }
-}
+};
 
 // Read all users
-const readAllUsers = async()=>{
+const readAllUsers = async () => {
     const params = {
         TableName: Table
-    }
-    try{
-        const { Items = [] } = await db.scan(params).promise()
-        return { success: true, data: Items }
+    };
 
-    } catch(error){
-        return { success: false, data: null }
+    try {
+        const { Items = [] } = await db.send(new ScanCommand(params));
+        return { success: true, data: Items };
+    } catch (error) {
+        console.error('Failed to read items:', error);
+        return { success: false, data: null, error };
     }
-}
+};
 
-// Read Users by ID
+// Read User by ID
 const getUserById = async (value, key = 'id') => {
     const params = {
         TableName: Table,
         Key: {
             [key]: parseInt(value)
         }
-    }
+    };
+
     try {
-        const { Item = {} } =  await db.get(params).promise()
-        return { success: true, data: Item }
+        const { Item = {} } = await db.send(new GetCommand(params));
+        return { success: true, data: Item };
     } catch (error) {
-        return {  success: false, data: null}        
+        console.error('Failed to get item:', error);
+        return { success: false, data: null, error };
     }
-}
+};
 
 // Delete User by ID
-const deleteUserById = async(value, key = 'id' ) => { 
+const deleteUserById = async (value, key = 'id') => {
     const params = {
         TableName: Table,
         Key: {
             [key]: parseInt(value)
         }
-    }
-        
+    };
+
     try {
-        await db.delete(params).promise()
-        return {  success: true }
-
+        await db.send(new DeleteCommand(params));
+        return { success: true };
     } catch (error) {
-        return{ success: false }
+        console.error('Failed to delete item:', error);
+        return { success: false, error };
     }
-}
-
+};
 
 export {
     createOrUpdate,
     readAllUsers,
     getUserById,
     deleteUserById
-}
+};

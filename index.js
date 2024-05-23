@@ -4,12 +4,15 @@ import { createOrUpdate, getUserById } from './src/database/db.js';
 // chat.id and message from body is missing here
 
 export const handler = async (event) => {
-  
-  const body = JSON.parse(event.body);
-  
+
   try {
+
+    const body = JSON.parse(event.body);
+    const { chat, text } = body.message;
+    
     // Retrieve user's current state from DynamoDB
-    const userData = await getUserById(chat.id);
+    const userResult = await getUserById(chat.id);
+    let userData = userResult.success ? userResult.data : null;
 
     if (!userData) {
       // New user, initialize state and store in DynamoDB
@@ -24,15 +27,15 @@ export const handler = async (event) => {
       switch (currentState) {
         case 'waiting_for_service_choice':
           // Handle service choice logic
-          await handleServiceChoice(chat.id, text);
+          await handleServiceChoice(bot, chat.id);
           break;
         case 'waiting_for_address':
           // Handle address input logic
-          await handleAddressInput(chat.id, text);
+          await handleAddressInput(bot, chat.id, text);
           break;
         case 'waiting_for_phone':
           // Handle phone input logic
-          await handlePhoneInput(chat.id, text);
+          await handlePhoneInput(bot, chat.id, text);
           break;
         default:
           console.log("default")

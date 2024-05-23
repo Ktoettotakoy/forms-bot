@@ -1,13 +1,13 @@
 import { TOKEN, ADMINS } from '../../config.js'
-import TelegramBot from 'node-telegram-bot-api';
-const bot = new TelegramBot(TOKEN); // make sure that it is the same bot 
+import { createOrUpdate } from '../database/db.js';
+import { start_command_admin_message, start_command_user_message, waiting_for_address_state_message, waiting_for_phone_state_message} from "../resources/text.js"
 
-export async function handleServiceChoice(chatId, text) {
+export async function handleServiceChoice(bot, chatId) {
     if(!ADMINS.includes(chat.id)){
-        await bot.sendMessage(chat.id, "Hello Admin")
+        await bot.sendMessage(chat.id, start_command_admin_message)
       } else{
         console.log("target")
-        await bot.sendMessage(chat.id, "Для начала выберите нужную Вам услугу:", {
+        await bot.sendMessage(chat.id, start_command_user_message, {
           reply_markup: {
             keyboard: [
               [
@@ -24,7 +24,7 @@ export async function handleServiceChoice(chatId, text) {
         const selectedOption = query.data; // Get the selected option from the callback query
         const userData = {
             chatId: chatId,
-            currentState: 'waiting_for_service_choice',
+            currentState: "waiting_for_address",
             selectedOption: selectedOption // Add selected option to userData
         };
 
@@ -38,29 +38,27 @@ export async function handleServiceChoice(chatId, text) {
             console.error('Failed to store or update user data:', result.error);
         }
     });
-    // Handle logic for service choice state
-    // Update DynamoDB state and data if necessary
   }
   
-  async function handleAddressInput(chatId, text) {
+  async function handleAddressInput(bot, chatId, text) {
     console.log("options")
-    await bot.sendMessage(chat.id, "HUI")
-    await bot.sendMessage(chat.id, "Укажите свой адрес, чтобы мы могли подобрать ближайший сервис доступный Вам:", {
-      reply_markup: {
-        keyboard: [
-          [
-            { text: 'Option A' },
-            { text: 'Option B' }
-          ],
-        ],
-        one_time_keyboard: true // Keyboard will disappear after button press
-      }
-    });
+
     // Handle logic for address input state
     // Update DynamoDB state and data if necessary
   }
   
-  async function handlePhoneInput(chatId, text) {
+  async function handlePhoneInput(bot, chatId, text) {
+    await bot.sendMessage(chat.id, waiting_for_phone_state_message, {
+        reply_markup: {
+          keyboard: [
+            [
+              { text: 'Option A' },
+              { text: 'Option B' }
+            ],
+          ],
+          one_time_keyboard: true // Keyboard will disappear after button press
+        }
+      });
     // Handle logic for phone input state
     // Update DynamoDB state and data if necessary
   }
