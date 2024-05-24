@@ -2,6 +2,11 @@
 export const start_command_user_message = "Для начала выберите нужную Вам услугу:"
 export const start_command_admin_message = "Привет админ! Напиши /help чтоб узнать доступные команды"
 
+// # /help 
+// admin
+export const help_command_admin_message = "Доступные команды:\n- /get_chat_id: получить ID данного чата\n- /show_fsm: запустить тестовый диалог";
+//user
+export const help_command_user_message = "Доступные команды:\n- /start: начать работу с ботом";
 // # /echo
 
 // # Key words in keyboard
@@ -29,3 +34,4 @@ export const waiting_for_phone_state_message = ("Оставьте свой но�
 export const share_phone_number_keyboard = ("Поделится номером")
 // # Text after Phone number 
 export const success_message = ("✅ Заявка успешно оставлена, ожидайте звонка")
+

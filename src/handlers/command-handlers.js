@@ -1,7 +1,7 @@
 import { ADMINS } from "../../config.js";
 import { checkSuccess, createOrUpdate, deleteUserById } from "../database/db.js";
 import { start_keyboard } from "../resources/keyboards.js";
-import { start_command_admin_message, start_command_user_message } from "../resources/text.js";
+import { start_command_admin_message, start_command_user_message, help_command_admin_message, help_command_user_message } from "../resources/text.js";
 
 export async function handleStartCommand(bot, chatId, user){
 	console.log("Starting handleStartCommand")
@@ -26,8 +26,21 @@ export async function handleStartCommand(bot, chatId, user){
 			id: chatId,
 			state: 'waiting_for_service_choice'
 		});
-		console.log(`Initializing new user with chat ID: ${chatId}`);
+		// console.log(`Initializing new user with chat ID: ${chatId}`);
 	} catch (error) {
-		console.log("Error: " + error)
+		console.log("Error handling start command:" + error)
+	}
+}
+
+export async function handleHelpCommand(bot, chatId) {
+	try {
+		// Check if the user is an admin
+		if (ADMINS.includes(chatId)) {
+			await bot.sendMessage(chatId, help_command_admin_message);
+		} else {
+			await bot.sendMessage(chatId, help_command_user_message);
+		}
+	} catch (error) {
+		console.error("Error handling help command:", error);
 	}
 }
