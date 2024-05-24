@@ -1,14 +1,16 @@
-import { share_phone_number_keyboard } from "./text.js"
+import { share_phone_number_keyboard, buttons } from "./text.js"
+
+const keyboardButtons = buttons.map(button => ({ text: button }));
+
+const keyboardRows = [];
+for (let i = 0; i < keyboardButtons.length; i += 3) {
+  keyboardRows.push(keyboardButtons.slice(i, i + 3));
+}
 
 export const start_keyboard = {
   reply_markup: {
     remove_keyboard: true,
-    keyboard: [
-      [
-        {text: 'Option 1'},
-        {text: 'Option 2'}
-      ],
-    ],
+    keyboard: keyboardRows,
     resize_keyboard: true,
     one_time_keyboard: true
   }

@@ -1,12 +1,12 @@
 import { ADMIN_CHAT_ID } from '../../config.js'
 import { createOrUpdate, deleteUserById, checkSuccess } from '../database/db.js';
 import { phone_keyboard, remove_inline_keyboard } from '../resources/keyboards.js';
-import { waiting_for_address_state_message, waiting_for_phone_state_message, success_message} from "../resources/text.js"
+import { waiting_for_address_state_message, waiting_for_phone_state_message, success_message, buttons} from "../resources/text.js"
 
 export async function handleServiceChoice(bot, chatId, text) {
   console.log("Starting handleServiceChoice")
 
-  if (text === "Option 1" || text === "Option 2" ) { // proposed keyboard options
+  if (buttons.includes(text) ) { // proposed keyboard options
     
     // update the state and information stored in the table
     const userData = {

@@ -5,7 +5,7 @@ export const start_command_admin_message = "Привет админ! Напиш�
 // # /echo
 
 // # Key words in keyboard
-let buttons = []
+export let buttons = []
 
 const button_1_message = ("Продажа машин")
 const button_2_message = ("Кафе")
