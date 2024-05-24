@@ -2,6 +2,7 @@ import { share_phone_number_keyboard } from "./text.js"
 
 export const start_keyboard = {
   reply_markup: {
+    remove_keyboard: true,
     keyboard: [
       [
         {text: 'Option 1'},

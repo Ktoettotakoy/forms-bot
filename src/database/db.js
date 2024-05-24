@@ -57,7 +57,7 @@ const checkSuccess = (response) => {
   if (response.success) {
     console.log(`Database operation: ${response.operation} is successful!`);
   } else {
-    console.error(`Failed to ${response.operation} user data:`, response.error);
+    console.error(`Database operation: ${response.operation} failed:`, response.error);
   }
 }
 

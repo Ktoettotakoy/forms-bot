@@ -14,14 +14,16 @@ export const handler = async (event) => {
     const body = JSON.parse(event.body);
     const { chat, text } = body.message;
 
-    if(text.startsWith("/")){
+    if(text && text.startsWith("/")){
+      const user = await getUserById(chat.id);
+
       switch (text) {
         case "/start":
-          handleStartCommand(bot, chat.id)
+          await handleStartCommand(bot, chat.id, user)
           break;
       
         default:
-          bot.sendMessage(chat.id, "Unknown command")
+          await bot.sendMessage(chat.id, "Unknown command")
           break;
       }
     } else {

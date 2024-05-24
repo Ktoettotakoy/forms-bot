@@ -1,7 +1,7 @@
-import { ADMINS, ADMIN_CHAT_ID } from '../../config.js'
-import { createOrUpdate, getUserById, deleteUserById, checkSuccess } from '../database/db.js';
-import { phone_keyboard, remove_inline_keyboard, start_keyboard } from '../resources/keyboards.js';
-import { start_command_admin_message, start_command_user_message, waiting_for_address_state_message, waiting_for_phone_state_message, success_message} from "../resources/text.js"
+import { ADMIN_CHAT_ID } from '../../config.js'
+import { createOrUpdate, deleteUserById, checkSuccess } from '../database/db.js';
+import { phone_keyboard, remove_inline_keyboard } from '../resources/keyboards.js';
+import { waiting_for_address_state_message, waiting_for_phone_state_message, success_message} from "../resources/text.js"
 
 export async function handleServiceChoice(bot, chatId, text) {
   console.log("Starting handleServiceChoice")
@@ -57,7 +57,7 @@ export async function handleAddressInput(bot, chatId, text, user) {
 
     await bot.sendMessage(chatId, waiting_for_phone_state_message, phone_keyboard);
   } else {
-    bot.sendMessage(chatId, "Message is too long")
+    await bot.sendMessage(chatId, "Message is too long")
   }
 }
   
@@ -85,7 +85,7 @@ export async function handlePhoneInput(bot, chatId, message, user) {
         `Адрес: ${address || 'N/A'}\n` +
         `Номер телефона: ${phoneNumber || 'N/A'}`;
     
-    bot.sendMessage("917351345", formattedString)
+    await bot.sendMessage(ADMIN_CHAT_ID, formattedString)
 
     // send confirmation to the user and remove the keyboard
     await bot.sendMessage(chatId, success_message, remove_inline_keyboard);
