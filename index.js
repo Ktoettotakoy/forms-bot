@@ -1,5 +1,5 @@
 import { handleAddressInput, handleServiceChoice, handlePhoneInput } from './src/handlers/FSM-handlers.js';
-import { handleHelpCommand, handleStartCommand } from './src/handlers/command-handlers.js';
+import { handleGetChatIdCommand, handleHelpCommand, handleStartCommand } from './src/handlers/command-handlers.js';
 import { checkSuccess, createOrUpdate, getUserById } from './src/database/db.js';
 
 import TelegramBot from 'node-telegram-bot-api';
@@ -23,9 +23,12 @@ export const handler = async (event) => {
           await handleStartCommand(bot, chat.id, user);
           break;
         case "/help":
-          await handleHelpCommand(bot, chat.id);
+          await handleHelpCommand(bot, body.message.from.id);
           break;
-      
+        case "/get_chat_id":
+          await handleGetChatIdCommand(bot, body.message);
+          break;
+
         default:
           await bot.sendMessage(chat.id, "Unknown command");
           break;

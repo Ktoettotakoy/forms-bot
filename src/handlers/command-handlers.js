@@ -32,15 +32,28 @@ export async function handleStartCommand(bot, chatId, user){
 	}
 }
 
-export async function handleHelpCommand(bot, chatId) {
+export async function handleHelpCommand(bot, userId) {
 	try {
 		// Check if the user is an admin
-		if (ADMINS.includes(chatId)) {
-			await bot.sendMessage(chatId, help_command_admin_message);
+		if (ADMINS.includes(userId)) {
+			await bot.sendMessage(userId, help_command_admin_message);
 		} else {
-			await bot.sendMessage(chatId, help_command_user_message);
+			await bot.sendMessage(userId, help_command_user_message);
 		}
 	} catch (error) {
 		console.error("Error handling help command:", error);
+	}
+}
+
+export async function handleGetChatIdCommand(bot, message) {
+	try {
+		const userId = message.from.id;
+		const chatId = message.chat.id;
+		// Check if the user is an admin
+		if (ADMINS.includes(userId)) {
+			await bot.sendMessage(chatId, `Chat ID is: ${chatId}\nYour User ID is: ${userId}`);
+		}
+	} catch (error) {
+		console.error("Error handling get chat ID command:", error);
 	}
 }
