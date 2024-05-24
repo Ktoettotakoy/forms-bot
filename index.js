@@ -1,7 +1,9 @@
-import { handleServiceChoice, handleAddressInput, handlePhoneInput } from './src/handlers/handlers.js';
-import { createOrUpdate, getUserById } from './src/database/db.js';
+import { handleAddressInput, handleServiceChoice, handlePhoneInput } from './src/handlers/FSM-handlers.js';
+import { handleStartCommand } from './src/handlers/command-handlers.js';
+import { checkSuccess, createOrUpdate, getUserById } from './src/database/db.js';
 
 import TelegramBot from 'node-telegram-bot-api';
+
 import { TOKEN } from "./config.js"
 const bot = new TelegramBot(TOKEN);
 
@@ -11,44 +13,46 @@ export const handler = async (event) => {
 
     const body = JSON.parse(event.body);
     const { chat, text } = body.message;
-    
-    // Retrieve user's current state from DynamoDB
-    let userResult = await getUserById(chat.id);
-    let userData = userResult.success ? userResult.data : null;
 
-    if (!userData || !userData.id) {
-      // New user, initialize state and store in DynamoDB
-      await createOrUpdate({
-        id: chat.id,
-        state: 'waiting_for_service_choice'
-      });
-      console.log(`Initializing new user with chat ID: ${chat.id}`);
-    }
-    // User exists, handle message based on current state
-    userResult = await getUserById(chat.id);
-    console.log(`User retrieval result: ${JSON.stringify(userResult)}`);
-    
-    const currentState = userResult.data.state;
-    console.log(`Current state for chat ID ${chat.id}: ${currentState}`);
+    if(text.startsWith("/")){
+      switch (text) {
+        case "/start":
+          handleStartCommand(bot, chat.id)
+          break;
+      
+        default:
+          bot.sendMessage(chat.id, "Unknown command")
+          break;
+      }
+    } else {
+      // get user information from the table
+      const user = await getUserById(chat.id);
+      // check if the operation was successful 
+      checkSuccess(user)
 
-    switch (currentState) {
-      case 'waiting_for_service_choice':
-        // Handle service choice logic
-        await handleServiceChoice(bot, chat.id, text);
-        break;
-      case 'waiting_for_address':
-        // Handle address input logic
-        await handleAddressInput(bot, chat.id, text);
-        break;
-      case 'waiting_for_phone':
-        // Handle phone input logic
-        await handlePhoneInput(bot, chat.id, body.message);
-        break;
-      default:
-        console.log("default")
-        await bot.sendMessage(chat.id, "Something went wrong")
-        break;
+      console.log(`User retrieval result: ${JSON.stringify(user)}`);
+
+      switch (user.data.state) {
+        case 'waiting_for_service_choice': // state when we wait for option choice 
+          // Handle service choice logic
+          await handleServiceChoice(bot, chat.id, text);
+          break;
+        case 'waiting_for_address': // state when we wait for an address
+          // Handle address input logic
+          await handleAddressInput(bot, chat.id, text, user);
+          break;
+        case 'waiting_for_phone': // state when we wait for a phone number
+          // Handle phone input logic
+          await handlePhoneInput(bot, chat.id, body.message, user);
+          break;
+        default: // echo state
+          console.log("default")
+          await bot.sendMessage(chat.id, "Type /start to start")
+          break;
+      }
     }
+
+    
   } catch (error) {
     console.error('Error:', error);
   }

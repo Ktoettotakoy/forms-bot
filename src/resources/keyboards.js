@@ -24,3 +24,9 @@ export const phone_keyboard = {
     one_time_keyboard: true
   }
 }
+
+export const remove_inline_keyboard = {
+  reply_markup: {
+    remove_keyboard: true
+  }
+}

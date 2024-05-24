@@ -1,18 +1,12 @@
 import { ADMINS, ADMIN_CHAT_ID } from '../../config.js'
 import { createOrUpdate, getUserById, deleteUserById, checkSuccess } from '../database/db.js';
-import { phone_keyboard, start_keyboard } from '../resources/keyboards.js';
+import { phone_keyboard, remove_inline_keyboard, start_keyboard } from '../resources/keyboards.js';
 import { start_command_admin_message, start_command_user_message, waiting_for_address_state_message, waiting_for_phone_state_message, success_message} from "../resources/text.js"
 
 export async function handleServiceChoice(bot, chatId, text) {
   console.log("Starting handleServiceChoice")
-  if(text === "/start"){
-    if(!ADMINS.includes(chatId)){
-      await bot.sendMessage(chatId, start_command_admin_message)
-    } else{
-      // ask user to choose an option from proposed by start_keyboard
-      await bot.sendMessage(chatId, start_command_user_message, start_keyboard);
-    }
-  } else if (text === "Option 1" || text === "Option 2" ) { // proposed keyboard options
+
+  if (text === "Option 1" || text === "Option 2" ) { // proposed keyboard options
     
     // update the state and information stored in the table
     const userData = {
@@ -28,7 +22,7 @@ export async function handleServiceChoice(bot, chatId, text) {
     checkSuccess(result);
     
     // notify user that it had proceed to the next step
-    await bot.sendMessage(chatId, waiting_for_address_state_message);
+    await bot.sendMessage(chatId, waiting_for_address_state_message, remove_inline_keyboard);
 
   } else{
     console.log("We are in start state, but user doesn't write start"); //refactor later
@@ -36,12 +30,12 @@ export async function handleServiceChoice(bot, chatId, text) {
     
 }
   
-export async function handleAddressInput(bot, chatId, text) {
+export async function handleAddressInput(bot, chatId, text, user) {
   // console log the current handler for debug
   console.log("Starting handleAddressInput")
   
   // get user information from the table
-  const userOption = (await getUserById(chatId)).data.option;
+  const userOption = user.data.option
 
   // ideally validate text input
   if (text.length < 250){
@@ -67,20 +61,12 @@ export async function handleAddressInput(bot, chatId, text) {
   }
 }
   
-export async function handlePhoneInput(bot, chatId, message) {
+export async function handlePhoneInput(bot, chatId, message, user) {
   try {
 
-    // get user information from the table
-    const result = await getUserById(chatId);
-    
-    // check if the operation was successful
-    checkSuccess(result);
-      
-    //if successful then 
     // Extract necessary information
-    const userData = result.data;
-    const option = userData.option;
-    const address = userData.address;
+    const option = user.data.option;
+    const address = user.data.address;
     let phoneNumber = null;
     if (message.contact){
       phoneNumber = message.contact.phone_number;
@@ -94,7 +80,7 @@ export async function handlePhoneInput(bot, chatId, message) {
 
     // create the formatted message string
     const formattedString = 
-        `Время: ${dtString}\n` +
+        `Время: ${dtString} + " GMT +0"\n` +
         `Сервис: ${option || 'N/A'}\n` +
         `Адрес: ${address || 'N/A'}\n` +
         `Номер телефона: ${phoneNumber || 'N/A'}`;
@@ -102,11 +88,7 @@ export async function handlePhoneInput(bot, chatId, message) {
     bot.sendMessage("917351345", formattedString)
 
     // send confirmation to the user and remove the keyboard
-    await bot.sendMessage(chatId, success_message, {
-      reply_markup: {
-        remove_keyboard: true
-      }
-    });
+    await bot.sendMessage(chatId, success_message, remove_inline_keyboard);
 
     // delete entry from the database
     const deleteResult = await deleteUserById(chatId);

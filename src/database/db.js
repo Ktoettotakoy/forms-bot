@@ -1,4 +1,4 @@
-import {db, Table} from './db.config.js'
+import {db, Table} from './db-config.js'
 
 import { PutCommand, GetCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
 
