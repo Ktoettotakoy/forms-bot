@@ -14,7 +14,7 @@ export async function handleStartCommand(bot, chatId, user){
 			checkSuccess(result);
 		}
 
-		if(!ADMINS.includes(chatId)){
+		if(false){ // ADMINS.includes(chatId) for admin purposes. Now disabled
 			await bot.sendMessage(chatId, start_command_admin_message)
 		} else{
 			// ask user to choose an option from proposed by start_keyboard
