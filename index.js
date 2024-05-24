@@ -23,7 +23,7 @@ export const handler = async (event) => {
           await handleStartCommand(bot, chat.id, user);
           break;
         case "/help":
-          await handleHelpCommand(bot, body.message.from.id);
+          await handleHelpCommand(bot, body.message);
           break;
         case "/get_chat_id":
           await handleGetChatIdCommand(bot, body.message);

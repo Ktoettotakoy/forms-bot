@@ -32,13 +32,13 @@ export async function handleStartCommand(bot, chatId, user){
 	}
 }
 
-export async function handleHelpCommand(bot, userId) {
+export async function handleHelpCommand(bot, message) {
 	try {
 		// Check if the user is an admin
-		if (ADMINS.includes(userId)) {
-			await bot.sendMessage(userId, help_command_admin_message);
+		if (ADMINS.includes(message.from.id)) {
+			await bot.sendMessage(message.chat.id, help_command_admin_message);
 		} else {
-			await bot.sendMessage(userId, help_command_user_message);
+			await bot.sendMessage(message.chat.id, help_command_user_message);
 		}
 	} catch (error) {
 		console.error("Error handling help command:", error);
