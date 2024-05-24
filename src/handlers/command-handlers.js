@@ -1,6 +1,6 @@
 import { ADMINS } from "../../config.js";
 import { checkSuccess, createOrUpdate, deleteUserById } from "../database/db.js";
-import { remove_inline_keyboard, start_keyboard } from "../resources/keyboards.js";
+import { start_keyboard } from "../resources/keyboards.js";
 import { start_command_admin_message, start_command_user_message } from "../resources/text.js";
 
 export async function handleStartCommand(bot, chatId, user){

@@ -5,6 +5,7 @@ import { checkSuccess, createOrUpdate, getUserById } from './src/database/db.js'
 import TelegramBot from 'node-telegram-bot-api';
 
 import { TOKEN } from "./config.js"
+import { handleEcho } from './src/handlers/echo-handler.js';
 const bot = new TelegramBot(TOKEN);
 
 export const handler = async (event) => {
@@ -48,13 +49,10 @@ export const handler = async (event) => {
           await handlePhoneInput(bot, chat.id, body.message, user);
           break;
         default: // echo state
-          console.log("default")
-          await bot.sendMessage(chat.id, "Type /start to start")
+          await handleEcho(bot, chat.id, text)
           break;
       }
     }
-
-    
   } catch (error) {
     console.error('Error:', error);
   }
