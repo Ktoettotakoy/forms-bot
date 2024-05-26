@@ -5,9 +5,12 @@ import { start_command_admin_message, start_command_user_message, help_command_a
 
 
 // Handle start command
-export async function handleStartCommand(bot, chatId, user){
+export async function handleStartCommand(bot, message, user){
 	console.log("Starting handleStartCommand")
 	try {
+
+		const userId = message.from.id;
+		const chatId = message.chat.id;
 
 		// if user doesn't exist in a table, create it
 		if (user.data && Object.keys(user.data).length > 0){
@@ -16,7 +19,7 @@ export async function handleStartCommand(bot, chatId, user){
 			checkSuccess(result);
 		}
 
-		if(false){ // ADMINS.includes(chatId) for admin purposes. Now disabled
+		if(ADMINS.includes(userId)){
 			await bot.sendMessage(chatId, start_command_admin_message)
 		} else{
 			// ask user to choose an option from proposed by start_keyboard, key stored in database 
@@ -69,8 +72,8 @@ export async function getButtonsListCommand(bot, chatId){
 }
 
 // Handle adding new button command
-export async function addNewOptionButtonCommand(bot, message) {
-	console.log("Starting addNewOptionButtonCommand");
+export async function addOptionButtonCommand(bot, message) {
+	console.log("Starting addOptionButtonCommand");
 	try {
 		const userId = message.from.id;
 		
@@ -82,7 +85,7 @@ export async function addNewOptionButtonCommand(bot, message) {
 
 			const chatId = message.chat.id;
 			const text = message.text;
-			const buttonText = text.replace('/add_new_option_button', '').trim();
+			const buttonText = text.replace('/add_option_button', '').trim();
 
 			if(!buttons.includes(buttonText)){
 				buttons.push(buttonText)
@@ -95,7 +98,7 @@ export async function addNewOptionButtonCommand(bot, message) {
 			}
 		}
 	} catch (error) {
-		console.error("Error handling add new option button command:", error);
+		console.error("Error handling add option button command:", error);
 	}
 }
 
@@ -130,3 +133,26 @@ export async function deleteOptionButtonCommand(bot, message) {
     console.error("Error handling delete option button command:", error);
   }
 }
+
+// Handle start dialog command for admin
+export async function handleStartDialogCommand(bot, message) {
+	console.log("Starting handleStartDialogCommand");
+	try {
+			const userId = message.from.id;
+
+			// Check if the user is an admin
+			if (ADMINS.includes(userId)) {
+					// Load the start keyboard dynamically
+					await bot.sendMessage(userId, start_command_user_message, start_keyboard);
+
+					// New user, initialize state and store in DynamoDB
+					await createOrUpdate({
+							id: userId,
+							state: 'waiting_for_service_choice'
+					});
+			}
+	} catch (error) {
+			console.log("Error handling start dialog command:" + error);
+	}
+}
+

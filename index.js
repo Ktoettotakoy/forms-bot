@@ -1,5 +1,5 @@
 import { handleAddressInput, handleServiceChoice, handlePhoneInput } from './src/handlers/FSM-handlers.js';
-import { handleGetChatIdCommand, handleHelpCommand, handleStartCommand, addNewOptionButtonCommand, getButtonsListCommand, deleteOptionButtonCommand } from './src/handlers/command-handlers.js';
+import { handleGetChatIdCommand, handleHelpCommand, handleStartCommand, addOptionButtonCommand, getButtonsListCommand, deleteOptionButtonCommand, handleStartDialogCommand } from './src/handlers/command-handlers.js';
 import { checkSuccess, getUserById } from './src/database/db-commands.js';
 
 import TelegramBot from 'node-telegram-bot-api';
@@ -18,15 +18,15 @@ export const handler = async (event) => {
     if(text && text.startsWith("/")){
       const userData = await getUserById(chat.id);
 
-      if (text.startsWith("/add_new_option_button")){ // commands with parameter input 
-        await addNewOptionButtonCommand(bot, body.message);
+      if (text.startsWith("/add_option_button")){ // commands with parameter input 
+        await addOptionButtonCommand(bot, body.message);
       } else if (text.startsWith("/delete_option_button")) {
         await deleteOptionButtonCommand(bot, body.message);
       } 
       else {
         switch (text) { // other commands
           case "/start":
-            await handleStartCommand(bot, chat.id, userData);
+            await handleStartCommand(bot, body.message, userData);
             break;
           case "/help":
             await handleHelpCommand(bot, body.message);
@@ -36,6 +36,9 @@ export const handler = async (event) => {
             break;
           case "/get_option_buttons":
             await getButtonsListCommand(bot, chat.id);
+            break;
+          case "/start_dialog":
+            await handleStartDialogCommand(bot, body.message);
             break;
           default:
             await bot.sendMessage(chat.id, "Unknown command");
