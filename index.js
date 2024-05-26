@@ -1,6 +1,6 @@
 import { handleAddressInput, handleServiceChoice, handlePhoneInput } from './src/handlers/FSM-handlers.js';
-import { handleGetChatIdCommand, handleHelpCommand, handleStartCommand, addNewOptionButtonCommand, getButtonsListCommand } from './src/handlers/command-handlers.js';
-import { checkSuccess, createOrUpdate, getUserById } from './src/database/db-commands.js';
+import { handleGetChatIdCommand, handleHelpCommand, handleStartCommand, addNewOptionButtonCommand, getButtonsListCommand, deleteOptionButtonCommand } from './src/handlers/command-handlers.js';
+import { checkSuccess, getUserById } from './src/database/db-commands.js';
 
 import TelegramBot from 'node-telegram-bot-api';
 
@@ -16,14 +16,17 @@ export const handler = async (event) => {
     const { chat, text } = body.message;
 
     if(text && text.startsWith("/")){
-      const user = await getUserById(chat.id);
+      const userData = await getUserById(chat.id);
 
       if (text.startsWith("/add_new_option_button")){ // commands with parameter input 
         await addNewOptionButtonCommand(bot, body.message);
-      } else {
+      } else if (text.startsWith("/delete_option_button")) {
+        await deleteOptionButtonCommand(bot, body.message);
+      } 
+      else {
         switch (text) { // other commands
           case "/start":
-            await handleStartCommand(bot, chat.id, user);
+            await handleStartCommand(bot, chat.id, userData);
             break;
           case "/help":
             await handleHelpCommand(bot, body.message);
@@ -31,7 +34,7 @@ export const handler = async (event) => {
           case "/get_chat_id":
             await handleGetChatIdCommand(bot, body.message);
             break;
-          case "/get_all_buttons":
+          case "/get_option_buttons":
             await getButtonsListCommand(bot, chat.id);
             break;
           default:
@@ -41,24 +44,24 @@ export const handler = async (event) => {
       }
     } else {
       // get user information from the userTable
-      const user = await getUserById(chat.id);
+      const userData = await getUserById(chat.id);
       // check if the operation was successful 
-      checkSuccess(user)
+      checkSuccess(userData)
 
-      console.log(`User retrieval result: ${JSON.stringify(user)}`);
+      console.log(`User retrieval result: ${JSON.stringify(userData)}`);
 
-      switch (user.data.state) {
+      switch (userData.data.state) {
         case 'waiting_for_service_choice': // state when we wait for option choice 
           // Handle service choice logic
           await handleServiceChoice(bot, chat.id, text);
           break;
         case 'waiting_for_address': // state when we wait for an address
           // Handle address input logic
-          await handleAddressInput(bot, chat.id, text, user);
+          await handleAddressInput(bot, chat.id, text, userData);
           break;
         case 'waiting_for_phone': // state when we wait for a phone number
           // Handle phone input logic
-          await handlePhoneInput(bot, chat.id, body.message, user);
+          await handlePhoneInput(bot, chat.id, body.message, userData);
           break;
         default: // echo state
           await handleEcho(bot, chat.id, text)

@@ -97,6 +97,36 @@ export async function addNewOptionButtonCommand(bot, message) {
 	} catch (error) {
 		console.error("Error handling add new option button command:", error);
 	}
+}
 
+// Handle deleting a button command
+export async function deleteOptionButtonCommand(bot, message) {
+  console.log("Starting deleteOptionButtonCommand");
+  try {
+    const userId = message.from.id;
 
+    if (ADMINS.includes(userId)) {
+      // get existing buttons
+      const result = await getButtonsList();
+      checkSuccess(result);
+      let buttons = result.data;
+
+      const chatId = message.chat.id;
+      const text = message.text;
+      const buttonText = text.replace('/delete_option_button', '').trim();
+
+      const toBeDeletedIndex = buttons.indexOf(buttonText);
+      if (toBeDeletedIndex !== -1) {
+        buttons.splice(toBeDeletedIndex, 1);
+        console.log(buttons);
+        const response = await updateButtonsList(buttons);
+        checkSuccess(response);
+        await bot.sendMessage(chatId, "Successfully deleted");
+      } else {
+        await bot.sendMessage(chatId, "Button not found");
+      }
+    }
+  } catch (error) {
+    console.error("Error handling delete option button command:", error);
+  }
 }
