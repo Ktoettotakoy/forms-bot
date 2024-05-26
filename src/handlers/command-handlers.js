@@ -72,16 +72,15 @@ export async function getButtonsListCommand(bot, chatId){
 export async function addNewOptionButtonCommand(bot, message) {
 	console.log("Starting addNewOptionButtonCommand");
 	try {
+		const userId = message.from.id;
+		
 		if (ADMINS.includes(userId)) {
 			// get existing buttons
 			const result = await getButtonsList();
 			checkSuccess(result);
 			let buttons = result.data;
 
-			const userId = message.from.id;
 			const chatId = message.chat.id;
-
-
 			const text = message.text;
 			const buttonText = text.replace('/add_new_option_button', '').trim();
 
