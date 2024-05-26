@@ -1,14 +1,16 @@
 import { ADMINS } from "../../config.js";
-import { checkSuccess, createOrUpdate, deleteUserById } from "../database/db.js";
+import { checkSuccess, createOrUpdate, deleteUserById, getButtonsList, updateButtonsList } from "../database/db-commands.js";
 import { start_keyboard } from "../resources/keyboards.js";
-import { start_command_admin_message, start_command_user_message, help_command_admin_message, help_command_user_message } from "../resources/text.js";
+import { start_command_admin_message, start_command_user_message, help_command_admin_message, help_command_user_message, buttons } from "../resources/text.js";
 
+
+// Handle start command
 export async function handleStartCommand(bot, chatId, user){
 	console.log("Starting handleStartCommand")
 	try {
+
+		// if user doesn't exist in a table, create it
 		if (user.data && Object.keys(user.data).length > 0){
-			
-			// apparently no user in here
 			const result = await deleteUserById(chatId);
 			console.log("Result of deletion: " + result)
 			checkSuccess(result);
@@ -17,7 +19,7 @@ export async function handleStartCommand(bot, chatId, user){
 		if(false){ // ADMINS.includes(chatId) for admin purposes. Now disabled
 			await bot.sendMessage(chatId, start_command_admin_message)
 		} else{
-			// ask user to choose an option from proposed by start_keyboard
+			// ask user to choose an option from proposed by start_keyboard, key stored in database 
 			await bot.sendMessage(chatId, start_command_user_message, start_keyboard);
 		}
 
@@ -32,6 +34,7 @@ export async function handleStartCommand(bot, chatId, user){
 	}
 }
 
+// Handle help command
 export async function handleHelpCommand(bot, message) {
 	try {
 		// Check if the user is an admin
@@ -56,4 +59,45 @@ export async function handleGetChatIdCommand(bot, message) {
 	} catch (error) {
 		console.error("Error handling get chat ID command:", error);
 	}
+}
+
+// get all buttons as a list in the telegram command
+export async function getButtonsListCommand(bot, chatId){
+	console.log("Starting getButtonsListCommand");
+	const buttons = await getButtonsList();
+	await bot.sendMessage(chatId, JSON.stringify(buttons.data));
+}
+
+// Handle adding new button command
+export async function addNewOptionButtonCommand(bot, message) {
+	console.log("Starting addNewOptionButtonCommand");
+	try {
+		if (ADMINS.includes(userId)) {
+			// get existing buttons
+			const result = await getButtonsList();
+			checkSuccess(result);
+			let buttons = result.data;
+
+			const userId = message.from.id;
+			const chatId = message.chat.id;
+
+
+			const text = message.text;
+			const buttonText = text.replace('/add_new_option_button', '').trim();
+
+			if(!buttons.includes(buttonText)){
+				buttons.push(buttonText)
+				console.log(buttons);
+				const response = await updateButtonsList(buttons);
+				checkSuccess(response)
+				await bot.sendMessage(chatId, "Successfully added");
+			} else {
+				await bot.sendMessage(chatId, "Button already exists");
+			}
+		}
+	} catch (error) {
+		console.error("Error handling add new option button command:", error);
+	}
+
+
 }

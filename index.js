@@ -1,6 +1,6 @@
 import { handleAddressInput, handleServiceChoice, handlePhoneInput } from './src/handlers/FSM-handlers.js';
-import { handleGetChatIdCommand, handleHelpCommand, handleStartCommand } from './src/handlers/command-handlers.js';
-import { checkSuccess, createOrUpdate, getUserById } from './src/database/db.js';
+import { handleGetChatIdCommand, handleHelpCommand, handleStartCommand, addNewOptionButtonCommand, getButtonsListCommand } from './src/handlers/command-handlers.js';
+import { checkSuccess, createOrUpdate, getUserById } from './src/database/db-commands.js';
 
 import TelegramBot from 'node-telegram-bot-api';
 
@@ -18,23 +18,29 @@ export const handler = async (event) => {
     if(text && text.startsWith("/")){
       const user = await getUserById(chat.id);
 
-      switch (text) {
-        case "/start":
-          await handleStartCommand(bot, chat.id, user);
-          break;
-        case "/help":
-          await handleHelpCommand(bot, body.message);
-          break;
-        case "/get_chat_id":
-          await handleGetChatIdCommand(bot, body.message);
-          break;
-
-        default:
-          await bot.sendMessage(chat.id, "Unknown command");
-          break;
+      if (text.startsWith("/add_new_option_button")){ // commands with parameter input 
+        await addNewOptionButtonCommand(bot, body.message);
+      } else {
+        switch (text) { // other commands
+          case "/start":
+            await handleStartCommand(bot, chat.id, user);
+            break;
+          case "/help":
+            await handleHelpCommand(bot, body.message);
+            break;
+          case "/get_chat_id":
+            await handleGetChatIdCommand(bot, body.message);
+            break;
+          case "/get_all_buttons":
+            await getButtonsListCommand(bot, chat.id);
+            break;
+          default:
+            await bot.sendMessage(chat.id, "Unknown command");
+            break;
+        }
       }
     } else {
-      // get user information from the table
+      // get user information from the userTable
       const user = await getUserById(chat.id);
       // check if the operation was successful 
       checkSuccess(user)

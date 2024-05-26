@@ -1,14 +1,14 @@
 import { ADMIN_CHAT_ID } from '../../config.js'
-import { createOrUpdate, deleteUserById, checkSuccess } from '../database/db.js';
+import { createOrUpdate, deleteUserById, checkSuccess, getButtonsList } from '../database/db-commands.js';
 import { phone_keyboard, remove_inline_keyboard } from '../resources/keyboards.js';
 import { waiting_for_address_state_message, waiting_for_phone_state_message, success_message, buttons} from "../resources/text.js"
 
 export async function handleServiceChoice(bot, chatId, text) {
   console.log("Starting handleServiceChoice")
 
-  if (buttons.includes(text) ) { // proposed keyboard options
-    
-    // update the state and information stored in the table
+  const buttons = await getButtonsList();
+  if (buttons.data.includes(text) ) { // proposed keyboard options
+    // update the state and information stored in the userTable
     const userData = {
       id: chatId,
       state: "waiting_for_address", // new state
@@ -34,13 +34,13 @@ export async function handleAddressInput(bot, chatId, text, user) {
   // console log the current handler for debug
   console.log("Starting handleAddressInput")
   
-  // get user information from the table
+  // get user information from the userTable
   const userOption = user.data.option
 
   // ideally validate text input
   if (text.length < 250){
     
-    // update the state and stored information in the table
+    // update the state and stored information in the userTable
     const userData = {
       id: chatId,
       state: "waiting_for_phone",

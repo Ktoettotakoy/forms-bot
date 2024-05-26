@@ -12,6 +12,7 @@ const client = new DynamoDBClient({
 
 const db = DynamoDBDocumentClient.from(client);
 
-const Table = 'forms-bot-users';
+const userTable = 'forms-bot-users';
+const resTable = 'forms-bot-additional-resources';
 
-export { db, Table };
+export { db, userTable, resTable };

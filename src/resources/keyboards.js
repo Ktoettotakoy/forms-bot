@@ -1,20 +1,29 @@
-import { share_phone_number_keyboard, buttons } from "./text.js"
+import { getButtonsList } from "../database/db-commands.js";
+import { share_phone_number_keyboard } from "./text.js"
 
-const keyboardButtons = buttons.map(button => ({ text: button }));
 
-const keyboardRows = [];
-for (let i = 0; i < keyboardButtons.length; i += 3) {
-  keyboardRows.push(keyboardButtons.slice(i, i + 3));
-}
+async function loadStartKeyboard() {
 
-export const start_keyboard = {
-  reply_markup: {
-    remove_keyboard: true,
-    keyboard: keyboardRows,
-    resize_keyboard: true,
-    one_time_keyboard: true
+  const buttons = await getButtonsList();
+
+  const keyboardButtons = buttons.data.map(button => ({ text: button }));
+
+  const keyboardRows = [];
+  for (let i = 0; i < keyboardButtons.length; i += 3) {
+    keyboardRows.push(keyboardButtons.slice(i, i + 3));
   }
+
+  return { 
+    reply_markup: {
+      remove_keyboard: true,
+      keyboard: keyboardRows,
+      resize_keyboard: true,
+      one_time_keyboard: true
+    }
+  };
 }
+
+export const start_keyboard = await loadStartKeyboard()
 
 export const phone_keyboard = {
   reply_markup: {

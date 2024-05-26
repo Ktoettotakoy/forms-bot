@@ -1,17 +1,17 @@
-import {db, Table} from './db-config.js'
+import {db, userTable, resTable} from './db-config.js'
 
 import { PutCommand, GetCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
 
 // Create or Update users
 const createOrUpdate = async (data = {}) => {
   const params = {
-    TableName: Table,
+    TableName: userTable,
     Item: data
   };
 
   try {
     const command = new PutCommand(params);
-    const response = await db.send(command);
+    await db.send(command);
     return { success: true, operation: "create or update" };
   } catch (error) {
     return { success: false, operation: "create or update", error };
@@ -21,7 +21,7 @@ const createOrUpdate = async (data = {}) => {
 // Read User by ID
 const getUserById = async (value, key = 'id') => {
   const params = {
-    TableName: Table,
+    TableName: userTable,
     Key: {
       [key]: parseInt(value)
     }
@@ -38,9 +38,9 @@ const getUserById = async (value, key = 'id') => {
 // Delete User by ID
 const deleteUserById = async (value, key = 'id') => {
   const params = {
-    TableName: Table,
-      Key: {
-        [key]: parseInt(value)
+    TableName: userTable,
+    Key: {
+      [key]: parseInt(value)
     }
   };
 
@@ -49,6 +49,40 @@ const deleteUserById = async (value, key = 'id') => {
     return { success: true, operation: "delete" };
   } catch (error) {
     return { success: false, operation: "delete", error };
+  }
+};
+
+// Get all buttons
+const getButtonsList = async () => {
+  const params = {
+    TableName: resTable,
+    Key: { Type: 'buttons' }
+  };
+
+  try {
+    const { Item } = await db.send(new GetCommand(params));
+    return { success: true, operation: "get buttons", data: Item ? JSON.parse(Item.config) : [] };
+  } catch (error) {
+    return { success: false, operation: "get buttons", error };
+  }
+};
+
+// Update buttons list
+const updateButtonsList = async (buttons) => {
+  const params = {
+    TableName: resTable,
+    Item: {
+      Type: 'buttons',
+      config: JSON.stringify(buttons)
+    }
+  };
+
+  try {
+    const command = new PutCommand(params);
+    await db.send(command);
+    return { success: true, operation: "update buttons" };
+  } catch (error) {
+    return { success: false, operation: "update buttons", error };
   }
 };
 
@@ -65,5 +99,7 @@ export {
   createOrUpdate,
   getUserById,
   deleteUserById,
+  getButtonsList,
+  updateButtonsList,
   checkSuccess
 };
