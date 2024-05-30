@@ -12,7 +12,16 @@ export async function handleStartCommand(bot, message, user){
 		const userId = message.from.id;
 		const chatId = message.chat.id;
 
-		// if user doesn't exist in a table, create it
+		console.log(userId, chatId)
+		if(!ADMINS.includes(userId) && chatId == ADMIN_CHAT_ID){
+			console.log("HERE")
+			await bot.sendMessage(userId, "You're in admin chat, but don't have privileges")
+			return;
+		}
+
+		console.log("Here 2")
+
+		// if user is in any fsm state, delete it
 		if (user.data && Object.keys(user.data).length > 0){
 			const result = await deleteUserById(chatId);
 			console.log("Result of deletion: " + result)
@@ -22,20 +31,15 @@ export async function handleStartCommand(bot, message, user){
 		if(ADMINS.includes(userId)){
 			await bot.sendMessage(chatId, start_command_admin_message)
 		} else{
-			if(chatId === ADMIN_CHAT_ID){
-				await bot.sendMessage(chatId, "You're in admin chat")
-				return;
-			}
 			// ask user to choose an option from proposed by start_keyboard, key stored in database 
 			await bot.sendMessage(chatId, start_command_user_message, start_keyboard);
-		}
-
-		// New user, initialize state and store in DynamoDB
-		await createOrUpdate({
-			id: chatId,
-			state: 'waiting_for_service_choice'
-		});
+					// New user, initialize state and store in DynamoDB
+			await createOrUpdate({
+				id: chatId,
+				state: 'waiting_for_service_choice'
+			});
 		// console.log(`Initializing new user with chat ID: ${chatId}`);
+		}
 	} catch (error) {
 		console.log("Error handling start command:" + error)
 	}
