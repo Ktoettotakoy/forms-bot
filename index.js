@@ -6,7 +6,7 @@ import { checkSuccess, getUserById } from './src/database/db-commands.js';
 
 import TelegramBot from 'node-telegram-bot-api';
 
-import { ADMIN_CHAT_ID, TOKEN } from "./config.js"
+import { TOKEN } from "./config.js"
 import { handleEcho } from './src/handlers/echo-handler.js';
 const bot = new TelegramBot(TOKEN);
 
@@ -69,9 +69,7 @@ export const handler = async (event) => {
           await handlePhoneInput(bot, chat.id, body.message, userData);
           break;
         default: // echo state
-          if (!chat.id === ADMIN_CHAT_ID){
-            await handleEcho(bot, chat.id, text)
-          }
+          await handleEcho(bot, chat.id, text)
           break;
       }
     }
