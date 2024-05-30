@@ -1,4 +1,4 @@
-import { ADMINS } from "../../config.js";
+import { ADMINS, ADMIN_CHAT_ID } from "../../config.js";
 import { checkSuccess, createOrUpdate, deleteUserById, getButtonsList, updateButtonsList } from "../database/db-commands.js";
 import { start_keyboard } from "../resources/keyboards.js";
 import { start_command_admin_message, start_command_user_message, help_command_admin_message, help_command_user_message, buttons } from "../resources/text.js";
@@ -22,6 +22,10 @@ export async function handleStartCommand(bot, message, user){
 		if(ADMINS.includes(userId)){
 			await bot.sendMessage(chatId, start_command_admin_message)
 		} else{
+			if(chatId === ADMIN_CHAT_ID){
+				await bot.sendMessage(chatId, "You're in admin chat")
+				return;
+			}
 			// ask user to choose an option from proposed by start_keyboard, key stored in database 
 			await bot.sendMessage(chatId, start_command_user_message, start_keyboard);
 		}
@@ -138,21 +142,21 @@ export async function deleteOptionButtonCommand(bot, message) {
 export async function handleStartDialogCommand(bot, message) {
 	console.log("Starting handleStartDialogCommand");
 	try {
-			const userId = message.from.id;
+		const userId = message.from.id;
 
-			// Check if the user is an admin
-			if (ADMINS.includes(userId)) {
-					// Load the start keyboard dynamically
-					await bot.sendMessage(userId, start_command_user_message, start_keyboard);
-
-					// New user, initialize state and store in DynamoDB
-					await createOrUpdate({
-							id: userId,
-							state: 'waiting_for_service_choice'
-					});
-			}
+		// Check if the user is an admin
+		if (ADMINS.includes(userId)) {
+			// Load the start keyboard dynamically
+			await bot.sendMessage(userId, start_command_user_message, start_keyboard);
+		
+			// New user, initialize state and store in DynamoDB
+			await createOrUpdate({
+				id: userId,
+				state: 'waiting_for_service_choice'
+			});
+		}
 	} catch (error) {
-			console.log("Error handling start dialog command:" + error);
+		console.log("Error handling start dialog command:" + error);
 	}
 }
 

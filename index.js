@@ -1,10 +1,12 @@
 import { handleAddressInput, handleServiceChoice, handlePhoneInput } from './src/handlers/FSM-handlers.js';
-import { handleGetChatIdCommand, handleHelpCommand, handleStartCommand, addOptionButtonCommand, getButtonsListCommand, deleteOptionButtonCommand, handleStartDialogCommand } from './src/handlers/command-handlers.js';
+import { handleGetChatIdCommand, handleHelpCommand, handleStartCommand, 
+  addOptionButtonCommand, getButtonsListCommand, 
+  deleteOptionButtonCommand, handleStartDialogCommand } from './src/handlers/command-handlers.js';
 import { checkSuccess, getUserById } from './src/database/db-commands.js';
 
 import TelegramBot from 'node-telegram-bot-api';
 
-import { TOKEN } from "./config.js"
+import { ADMIN_CHAT_ID, TOKEN } from "./config.js"
 import { handleEcho } from './src/handlers/echo-handler.js';
 const bot = new TelegramBot(TOKEN);
 
@@ -67,7 +69,9 @@ export const handler = async (event) => {
           await handlePhoneInput(bot, chat.id, body.message, userData);
           break;
         default: // echo state
-          await handleEcho(bot, chat.id, text)
+          if (!chat.id === ADMIN_CHAT_ID){
+            await handleEcho(bot, chat.id, text)
+          }
           break;
       }
     }
