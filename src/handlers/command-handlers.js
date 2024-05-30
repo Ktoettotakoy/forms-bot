@@ -1,7 +1,7 @@
 import { ADMINS, ADMIN_CHAT_ID } from "../../config.js";
 import { checkSuccess, createOrUpdate, deleteUserById, getButtonsList, updateButtonsList } from "../database/db-commands.js";
 import { start_keyboard } from "../resources/keyboards.js";
-import { start_command_admin_message, start_command_user_message, help_command_admin_message, help_command_user_message, buttons } from "../resources/text.js";
+import { start_command_admin_message, start_command_user_message, help_command_admin_message, help_command_user_message } from "../resources/text.js";
 
 
 // Handle start command
