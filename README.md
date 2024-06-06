@@ -9,21 +9,25 @@ This project is a Telegram bot developed using Node.js. It integrates with vario
 - **AWS Lambda**: Used to run the bot's backend code in a serverless environment.
 
 ## Project Structure
+```
 src/
-  ├── database/
-  │   ├── db-config.js
-  │   └── db-commands.js
-  ├── handlers/
-  │   ├── command-handler.js
-  │   ├── echo-handler.js
-  │   └── fsm-handler.js
-  └── resources/
-      ├── keyboards.js
-      └── text.js
+|-- database/
+|   |-- db-config.js
+|   |-- db-commands.js
+|-- handlers/
+|   |-- command-handler.js
+|   |-- echo-handler.js
+|   |-- fsm-handler.js
+|-- resources/
+|   |-- keyboards.js
+|   |-- text.js
 config.js
 index.js
 package.json
 add .env here as well!
+```
+
+
 
 ## Detailed File Description
 
