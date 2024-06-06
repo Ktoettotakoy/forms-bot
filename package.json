@@ -1,0 +1,19 @@
+{
+  "name": "forms-bot",
+  "version": "1.0.0",
+  "description": "## Dependencies  aiogram",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "rm -rf project.zip && zip -r project.zip .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Yaroslav",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.582.0",
+    "@aws-sdk/lib-dynamodb": "^3.582.0",
+    "dotenv": "^16.4.5",
+    "node-telegram-bot-api": "^0.66.0"
+  }
+}
