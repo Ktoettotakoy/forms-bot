@@ -31,6 +31,14 @@ add .env here as well!
 
 ## Detailed File Description
 
+### Environment Configuration (config.js)
+
+The `config.js` file is responsible for loading environment variables using the `dotenv` module.
+
+### Bot Initialization and Event Handling (index.js)
+
+The `index.js` file contains the main logic for handling incoming events and processing bot commands. The `handler` function is the entry point for the AWS Lambda function. Depending on whether the incoming message is a command or a regular message, the function routes the message to the appropriate command handler or finite state machine (FSM) handler, respectively. Once processing is complete, the function constructs a response object with a status code and message, indicating the processing status. It's pretty bad written, but works fine. 
+
 ### Handlers
 - **command-handler.js**: Handles various bot commands like `/start`, `/help`, `/add_option_button`, etc.
 - **echo-handler.js**: Handles the default state where the bot echoes user messages.
