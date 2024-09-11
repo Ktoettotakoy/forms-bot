@@ -29,14 +29,22 @@ add .env here as well!
 
 ## Startup
 To start you have to 
-```git clone https://github.com/Ktoettotakoy/forms-bot.git```
+```
+git clone https://github.com/Ktoettotakoy/forms-bot.git
+```
 Then 
-```cd forms-bot```
+```
+cd forms-bot
+```
 Then check if you have node installed (node -v in a terminal)
-```npm install``` 
+```
+npm install
+``` 
 It should install all the packages specified in package.json
 The last step is to add .env file. In my case it is 
-```touch .env```
+```
+touch .env
+```
 It should contain 5 env variables specified further. 
 
 ## Detailed File Description
