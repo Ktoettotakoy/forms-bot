@@ -1,7 +1,7 @@
 # Forms Bot on Node.js + AWS
 
 ## Why?
-I have just finished working on university team project([Cloud-Builder](https://github.com/Ktoettotakoy/Cloud-Builder)) where I learned a lot about AWS. I really wanted to get some more practice with AWS services and other concepts like databases, serverless architecture, webhooks and so on. Luckily I found a friend who asked to create a simple telegram bot which had to ask people to fill out a form which then had to be sent to my friend so that he could provide his service. He also didn't want to spend much money on hosting and maintenance. Perfect match!
+I have just finished working on university team project([Cloud-Builder](https://github.com/Ktoettotakoy/Cloud-Builder)) where I learned a lot about AWS. I really wanted to get some more practice with AWS services and other concepts like databases, serverless architecture, webhooks and so on. Luckily, I found a friend who asked to create a simple telegram bot which had to ask people to fill out a form which then had to be sent to my friend so that he could provide his service. He also didn't want to spend much money on hosting and maintenance. Perfect match!
 
 ## Overview
 This project is a Telegram bot developed using Node.js. It integrates with various AWS services to handle forms and user interactions effectively.
