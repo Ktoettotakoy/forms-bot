@@ -1,8 +1,9 @@
 import { ADMIN_CHAT_ID } from '../../config.js'
 import { createOrUpdate, deleteUserById, checkSuccess, getButtonsList } from '../database/db-commands.js';
 import { phone_keyboard, remove_inline_keyboard } from '../resources/keyboards.js';
-import { waiting_for_address_state_message, waiting_for_phone_state_message, success_message} from "../resources/text.js"
+import { waiting_for_address_state_message, waiting_for_phone_state_message, success_message} from "../resources/phrases.js"
 
+// 
 export async function handleServiceChoice(bot, chatId, text) {
   console.log("Starting handleServiceChoice")
 
@@ -85,6 +86,7 @@ export async function handlePhoneInput(bot, chatId, message, user) {
         `Адрес: ${address || 'N/A'}\n` +
         `Номер телефона: ${phoneNumber || 'N/A'}`;
     
+    // send a data received from user to admin chat  
     await bot.sendMessage(ADMIN_CHAT_ID, formattedString)
 
     // send confirmation to the user and remove the keyboard
@@ -97,6 +99,7 @@ export async function handlePhoneInput(bot, chatId, message, user) {
     checkSuccess(deleteResult)
 
   } catch (error) {
+    // if the error occurs, it is going to be seen in logs
     console.error('Error:', error);
   }
 }

@@ -1,5 +1,5 @@
 import { ADMINS, ADMIN_CHAT_ID } from "../../config.js";
-import { echo_user_message } from "../resources/text.js";
+import { echo_user_message } from "../resources/phrases.js";
 
 export async function handleEcho(bot, chatId, text){
     console.log("Starting handleEcho")

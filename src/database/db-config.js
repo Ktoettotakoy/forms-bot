@@ -12,7 +12,10 @@ const client = new DynamoDBClient({
 
 const db = DynamoDBDocumentClient.from(client);
 
-const userTable = 'forms-bot-users';
-const resTable = 'forms-bot-additional-resources';
+// for temporary storing user data (while in a finite state machine aka dialog)
+const userTable = 'forms-bot-users'; 
+
+// for adding, deleting, getting buttons
+const resTable = 'forms-bot-additional-resources';  
 
 export { db, userTable, resTable };

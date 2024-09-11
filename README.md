@@ -20,14 +20,24 @@ src/
 |   |-- fsm-handler.js
 |-- resources/
 |   |-- keyboards.js
-|   |-- text.js
+|   |-- phrases.js
 config.js
 index.js
 package.json
 add .env here as well!
 ```
 
-
+## Startup
+To start you have to 
+```git clone https://github.com/Ktoettotakoy/forms-bot.git```
+Then 
+```cd forms-bot```
+Then check if you have node installed (node -v in a terminal)
+```npm install``` 
+It should install all the packages specified in package.json
+The last step is to add .env file. In my case it is 
+```touch .env```
+It should contain 5 env variables specified further. 
 
 ## Detailed File Description
 
@@ -45,7 +55,7 @@ The `index.js` file contains the main logic for handling incoming events and pro
 - **fsm-handler.js**: Manages finite state machine transitions based on user inputs for different states (e.g., waiting for service choice, address, or phone number).
 
 ### Database
-- **db-config.js**: Contains configuration for connecting to the DynamoDB database.
+- **db-config.js**: Contains configuration for connecting to the DynamoDB database. Note, names for databases are hardcoded!
 - **db-commands.js**: Contains commands for interacting with the database, such as retrieving user data and checking operation success.
 
 ### Resources

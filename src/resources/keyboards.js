@@ -1,5 +1,5 @@
 import { getButtonsList } from "../database/db-commands.js";
-import { share_phone_number_keyboard } from "./text.js"
+import { share_phone_number_keyboard } from "./phrases.js"
 
 
 async function loadStartKeyboard() {

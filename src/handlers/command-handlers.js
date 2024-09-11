@@ -1,7 +1,7 @@
 import { ADMINS, ADMIN_CHAT_ID } from "../../config.js";
 import { checkSuccess, createOrUpdate, deleteUserById, getButtonsList, updateButtonsList } from "../database/db-commands.js";
 import { start_keyboard } from "../resources/keyboards.js";
-import { start_command_admin_message, start_command_user_message, help_command_admin_message, help_command_user_message } from "../resources/text.js";
+import { start_command_admin_message, start_command_user_message, help_command_admin_message, help_command_user_message } from "../resources/phrases.js";
 
 
 // Handle start command
@@ -18,8 +18,6 @@ export async function handleStartCommand(bot, message, user){
 			await bot.sendMessage(userId, "You're in admin chat, but don't have privileges")
 			return;
 		}
-
-		console.log("Here 2")
 
 		// if user is in any fsm state, delete it
 		if (user.data && Object.keys(user.data).length > 0){
@@ -38,7 +36,6 @@ export async function handleStartCommand(bot, message, user){
 				id: chatId,
 				state: 'waiting_for_service_choice'
 			});
-		// console.log(`Initializing new user with chat ID: ${chatId}`);
 		}
 	} catch (error) {
 		console.log("Error handling start command:" + error)
